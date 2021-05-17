@@ -32,6 +32,12 @@ const schemaStatusFavoriteContact = Joi.object({
 
 const validate = async (schema, body, next) => {
   try {
+    // if (Object.keys(body).length === 0) {
+    //   next({
+    //     status: 400,
+    //     message: "missing field favorite",
+    //   });
+    // }
     await schema.validateAsync(body);
     next();
   } catch (err) {

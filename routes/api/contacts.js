@@ -86,11 +86,16 @@ router.patch(
   validateStatusFavoriteContacts,
   async (req, res, next) => {
     try {
+      if (Object.keys(req.body).length === 0) {
+        return res
+          .status(400)
+          .json({ status: "missing field favorite", code: 400 });
+      }
       const contact = await Contacts.patchContact(
         req.params.contactId,
         req.body
       );
-      console.log(contact);
+
       if (contact) {
         return res
           .status(200)
@@ -99,7 +104,7 @@ router.patch(
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "missing field favorite",
+        message: "Not found",
       });
     } catch (error) {
       next(error);
