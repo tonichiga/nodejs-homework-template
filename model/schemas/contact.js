@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const { Schema, SchemaTypes } = mongoose;
+const { Subscription } = require("../../helpers/constants");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const contactSchema = new Schema({
   name: {
     type: String,
-    required: [true, "Set name for contact"],
+    default: "Guest",
+    minLength: 2,
   },
   email: {
     type: String,
@@ -16,7 +19,13 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: SchemaTypes.ObjectId,
+    ref: "user",
+  },
 });
+
+contactSchema.plugin(mongoosePaginate);
 
 const Contact = mongoose.model("contact", contactSchema);
 
