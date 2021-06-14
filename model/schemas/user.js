@@ -1,7 +1,8 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
-const { Subscription } = require("../../helpers/constants");
+// const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { nanoid } = require("nanoid");
+const { Schema, model } = require("mongoose");
+const { Subscription } = require("../../helpers/constants");
 const gravatar = require("gravatar");
 const SALT_FACTOR = 6;
 
@@ -16,11 +17,11 @@ const userSchema = new Schema(
         return re.test(String(value).toLowerCase());
       },
     },
-    subscription: {
-      type: String,
-      enum: [Subscription.BASIC, Subscription.STANDART, Subscription.PREMIUM],
-      default: Subscription.NONE,
-    },
+    // subscription: {
+    //   type: String,
+    //   enum: [Subscription.BASIC, Subscription.STANDART, Subscription.PREMIUM],
+    //   default: Subscription.NONE,
+    // },
     password: {
       type: String,
       required: true,
@@ -38,6 +39,15 @@ const userSchema = new Schema(
     userIdImg: {
       type: String,
       default: null,
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+      default: nanoid(),
     },
   },
   {
@@ -58,6 +68,6 @@ userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(String(password), this.password);
 };
 
-const User = mongoose.model("user", userSchema);
+const User = model("user", userSchema);
 
 module.exports = User;
